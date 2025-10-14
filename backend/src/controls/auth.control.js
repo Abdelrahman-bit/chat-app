@@ -1,8 +1,8 @@
-import bcrypt from 'bcryptjs'
-import jwt from 'jsonwebtoken'
+import bcrypt from 'bcryptjs';
 import User from '../models/user.model.js';
 import createError from '../utils/createError.js';
 import { generateToken } from '../utils/generateToken.js';
+import cloudinary from '../utils/cloudinary.js';
 
 const salt = Number(process.env.SALT)
 
@@ -48,19 +48,26 @@ const logOut = (req, res) => {
 };
 
 const updateProfile = async (req, res) =>{
-	const {avatar, fullName} = req.body;
-	if(!avatar && !fullName) throw createError('new avatar or fullName must be provided!', 400);
+	const {fullName} = req.body;
+	if(!req.file && !fullName) throw createError('new avatar or fullName must be provided!', 400);
 	let updatedVal = {}
-	if(avatar) updatedVal.avatarUrl = avatar;
+	if(req.file){
+		const uploadRespons = await cloudinary.uploader.upload(req.file.path);
+		updatedVal.avatarUrl = uploadRespons.secure_url;
+	}
 	if(fullName) updatedVal.fullName = fullName;
 
 	const updatedUser = await User.findByIdAndUpdate(req.user._id, { $set: updatedVal }, { new: true });
-
+ 
 	res.status(200).json({
 		message: "Profile updated successfully",
 		data: { id: updatedUser._id, fullName: updatedUser.fullName, profilePic: updatedUser.avatarUrl },
 	});
 }
 
+const checkAuth = (req, res) => {
+	res.status(200).json(req.user)
+}
 
-export { signUp, logIn, logOut, updateProfile };
+
+export { signUp, logIn, logOut, updateProfile, checkAuth };
