@@ -9,11 +9,12 @@ import SignUpPage from "./pages/SignUpPage"
 import LoginPage from "./pages/LoginPage"
 import SittingsPage from "./pages/SittingsPage"
 import ProfilePage from "./pages/ProfilePage"
+import { Toaster } from "react-hot-toast";
 
 
 function App() {
-  const auth = useSelector((state) => state.userAuth?.authUser);
-  const isChecking = useSelector((state) => state.userAuth?.isCheckingAuth);
+  const auth = useSelector((state) => state.userAuth.authUser);
+  const isChecking = useSelector((state) => state.userAuth.isCheckingAuth);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -31,17 +32,18 @@ function App() {
   }
 
   return (
-    <>
-      <NavBar />
-      <Routes>
-        <Route path="/" element={auth? <HomePage /> : <Navigate to='/login'/>} />
-        <Route path="/signup" element={!auth? <SignUpPage /> : <Navigate to="/" />} />
-        <Route path="/login" element={!auth? <LoginPage /> : <Navigate to={'/'} /> } />
-        <Route path="/sittings" element={<SittingsPage />} />
-        <Route path="/profile" element={auth? <ProfilePage />: <Navigate to='/login' />} />
-      </Routes>
-    </>
-  )
+		<>
+			<NavBar />
+			<Routes>
+				<Route path='/' element={auth ? <HomePage /> : <Navigate to='/login' />} />
+				<Route path='/signup' element={!auth ? <SignUpPage /> : <Navigate to='/' />} />
+				<Route path='/login' element={!auth ? <LoginPage /> : <Navigate to={"/"} />} />
+				<Route path='/sittings' element={<SittingsPage />} />
+				<Route path='/profile' element={auth ? <ProfilePage /> : <Navigate to='/login' />} />
+			</Routes>
+			<Toaster />
+		</>
+  );
 }
 
 export default App

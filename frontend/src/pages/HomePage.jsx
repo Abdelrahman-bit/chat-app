@@ -1,7 +1,3 @@
-import { useSelector, useDispatch } from "react-redux";
-import { checkAuth } from "../store/slices/auth";
-import { useEffect } from "react";
-import { Loader } from "lucide-react";
 
 function HomePage() {
 	// store reducer is mounted under `userAuth` (see store/index.js)
