@@ -1,15 +1,14 @@
 import { useRef, useState } from "react";
 import { Image, Send, X } from "lucide-react";
 import toast from "react-hot-toast";
-import { sendMessage } from "../store/slices/message";
+import { sendMessage, optimisticMessageAdded } from "../store/slices/message";
 import { useDispatch } from "react-redux";
 
 const MessageInput = () => {
 	const [text, setText] = useState("");
 	const [imagePreview, setImagePreview] = useState(null);
 	const fileInputRef = useRef(null);
-    const dispatch = useDispatch()
-
+	const dispatch = useDispatch();
 
 	const handleImageChange = (e) => {
 		const file = e.target.files[0];
@@ -34,13 +33,24 @@ const MessageInput = () => {
 		e.preventDefault();
 		if (!text.trim() && !imagePreview) return;
 
-		try {
-			await dispatch(sendMessage({
-				text: text.trim(),
-				image: imagePreview,
-			}));
+		// create a tempId for optimistic update
+		const tempId = `temp-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+		const tempMessage = {
+			__tempId: tempId,
+			senderId: null, // will be replaced by server response
+			receiverId: null,
+			text: text.trim(),
+			image: imagePreview,
+			createdAt: new Date().toISOString(),
+		};
 
-			// Clear form
+		// add optimistic message to UI
+		dispatch(optimisticMessageAdded(tempMessage));
+
+		// dispatch send with tempId for reconciliation
+		try {
+			dispatch(sendMessage({ tempId, text: text.trim(), image: imagePreview }));
+			// Optimistically clear the input and preview immediately
 			setText("");
 			setImagePreview(null);
 			if (fileInputRef.current) fileInputRef.current.value = "";

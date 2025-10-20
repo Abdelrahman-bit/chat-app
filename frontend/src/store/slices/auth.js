@@ -29,9 +29,10 @@ export const logout = createAsyncThunk("auth/logout", async (_, { rejectWithValu
 	try {
 		const res = await instance.post("/auth/logout");
 		toast.success("Loged Out successfully!");
+		return res.data;
 	} catch (error) {
-		toast.error(err.response?.data);
-		return rejectWithValue(err.response?.data);
+		toast.error(error.response?.data);
+		return rejectWithValue(error.response?.data);
 	}
 });
 
@@ -47,17 +48,19 @@ export const login = createAsyncThunk("auth/login", async (userData, { rejectWit
 	}
 });
 
-// Async thunk for updating profile 
+// Async thunk for updating profile
 export const updateProfile = createAsyncThunk("auth/updateProfile", async (data, { rejectWithValue }) => {
 	try {
 		const res = await instance.post("/auth/update-profile", data);
-		toast.success("image uploaded!");
-		return res.data.data
+		return res.data.data;
 	} catch (error) {
 		toast.error(`${error.response?.data.message}`);
 		return rejectWithValue(error.response?.data);
 	}
 });
+
+// Socket connection is handled by the SocketProvider (React context).
+// We expose a small reducer to receive onlineUsers updates from the provider.
 
 const authSlice = createSlice({
 	name: "auth",
@@ -69,7 +72,11 @@ const authSlice = createSlice({
 		isCheckingAuth: true,
 		onlineUsers: [],
 	},
-	reducers: {},
+	reducers: {
+		onlineUsersUpdated(state, action) {
+			state.onlineUsers = action.payload;
+		},
+	},
 	extraReducers: (builder) => {
 		builder
 			.addCase(checkAuth.pending, (state) => {
@@ -100,12 +107,13 @@ const authSlice = createSlice({
 			})
 			.addCase(logout.fulfilled, (state, action) => {
 				state.authUser = null;
+				state.isLoggedIn = false;
 			})
 			.addCase(login.pending, (state) => {
 				state.isLoggedIn = true;
 			})
 			.addCase(login.fulfilled, (state, action) => {
-				state.isLoggedIn = false;
+				state.isLoggedIn = true;
 				state.authUser = action.payload;
 			})
 			.addCase(login.rejected, (state) => {
@@ -123,5 +131,7 @@ const authSlice = createSlice({
 			});
 	},
 });
+
+export const { onlineUsersUpdated } = authSlice.actions;
 
 export default authSlice.reducer;

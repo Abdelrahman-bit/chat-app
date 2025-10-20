@@ -1,16 +1,18 @@
 import { Camera, Mail, User } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateProfile } from "../store/slices/auth";
+import toast from "react-hot-toast";
 
 const ProfilePage = () => {
-  const { isUpdatingProfile, authUser } = useSelector((state) => state.userAuth);
-  const [selectedImg, setSelectedImg] = useState(null)
-  const dispatch = useDispatch()
+	const { isUpdatingProfile, authUser } = useSelector((state) => state.userAuth);
+	const [selectedImg, setSelectedImg] = useState(null);
+	const [fullName, setFullName] = useState("");
+	const dispatch = useDispatch();
 
-  console.log(authUser);
-  
-  const handleImageUpload = async (e) => {
+	console.log(authUser);
+
+	const handleImageUpload = async (e) => {
 		const file = e.target.files[0];
 		if (!file) return;
 
@@ -21,11 +23,31 @@ const ProfilePage = () => {
 		reader.onload = async () => {
 			const base64Image = reader.result;
 			setSelectedImg(base64Image);
-			dispatch(updateProfile({ profilePic: base64Image }))
+			try {
+				await dispatch(updateProfile({ profilePic: base64Image })).unwrap();
+				toast.success("Profile image updated");
+			} catch (err) {
+				console.error("Failed to update profile", err);
+			}
 		};
-  };
-  return (
-		<div className='h-screen pt-20'>
+	};
+
+	useEffect(() => {
+		if (authUser?.fullName) setFullName(authUser.fullName);
+	}, [authUser]);
+
+	const handleSaveName = async () => {
+		if (!fullName.trim()) return toast.error("Full name cannot be empty");
+		try {
+			await dispatch(updateProfile({ fullName: fullName.trim() })).unwrap();
+			toast.success("Name updated");
+		} catch (err) {
+			console.error("Failed to update name", err);
+			toast.error("Failed to update name");
+		}
+	};
+	return (
+		<div className='min-h-screen pt-16 bg-base-200'>
 			<div className='max-w-2xl mx-auto p-4 py-8'>
 				<div className='bg-base-300 rounded-xl p-6 space-y-8'>
 					<div className='text-center'>
@@ -74,7 +96,17 @@ const ProfilePage = () => {
 								<User className='w-4 h-4' />
 								Full Name
 							</div>
-							<p className='px-4 py-2.5 bg-base-200 rounded-lg border'>{authUser?.fullName}</p>
+							<div className='flex gap-2'>
+								<input
+									type='text'
+									className='flex-1 px-4 py-2.5 bg-base-200 rounded-lg border'
+									value={fullName}
+									onChange={(e) => setFullName(e.target.value)}
+								/>
+								<button className='btn btn-sm' onClick={handleSaveName} disabled={isUpdatingProfile}>
+									Save
+								</button>
+							</div>
 						</div>
 
 						<div className='space-y-1.5'>
@@ -102,7 +134,7 @@ const ProfilePage = () => {
 				</div>
 			</div>
 		</div>
-  );
-}
+	);
+};
 
-export default ProfilePage
+export default ProfilePage;
