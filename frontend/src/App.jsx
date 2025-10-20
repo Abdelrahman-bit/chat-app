@@ -7,7 +7,7 @@ import NavBar from "./components/NavBar"
 import HomePage from "./pages/HomePage"
 import SignUpPage from "./pages/SignUpPage"
 import LoginPage from "./pages/LoginPage"
-import SittingsPage from "./pages/SittingsPage"
+import SettingsPage from "./pages/SittingsPage";
 import ProfilePage from "./pages/ProfilePage"
 import { Toaster } from "react-hot-toast";
 
@@ -15,6 +15,7 @@ import { Toaster } from "react-hot-toast";
 function App() {
   const auth = useSelector((state) => state.userAuth.authUser);
   const isChecking = useSelector((state) => state.userAuth.isCheckingAuth);
+  const theme = useSelector((state)=> state.theme.theme)
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -32,17 +33,17 @@ function App() {
   }
 
   return (
-		<>
+		<div data-theme={theme}>
 			<NavBar />
 			<Routes>
 				<Route path='/' element={auth ? <HomePage /> : <Navigate to='/login' />} />
 				<Route path='/signup' element={!auth ? <SignUpPage /> : <Navigate to='/' />} />
 				<Route path='/login' element={!auth ? <LoginPage /> : <Navigate to={"/"} />} />
-				<Route path='/sittings' element={<SittingsPage />} />
+				<Route path='/settings' element={<SettingsPage />} />
 				<Route path='/profile' element={auth ? <ProfilePage /> : <Navigate to='/login' />} />
 			</Routes>
 			<Toaster />
-		</>
+		</div>
   );
 }
 
