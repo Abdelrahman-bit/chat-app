@@ -40,7 +40,19 @@ export const login = createAsyncThunk("auth/login", async (userData, { rejectWit
 	try {
 		const res = await instance.post("/auth/login", userData);
 		toast.success("loged in successfully!");
-		return res.data;
+		return res.data.data;
+	} catch (error) {
+		toast.error(`${error.response?.data.message}`);
+		return rejectWithValue(error.response?.data);
+	}
+});
+
+// Async thunk for updating profile 
+export const updateProfile = createAsyncThunk("auth/updateProfile", async (data, { rejectWithValue }) => {
+	try {
+		const res = await instance.post("/auth/update-profile", data);
+		toast.success("image uploaded!");
+		return res.data.data
 	} catch (error) {
 		toast.error(`${error.response?.data.message}`);
 		return rejectWithValue(error.response?.data);
@@ -65,7 +77,7 @@ const authSlice = createSlice({
 			.addCase(checkAuth.fulfilled, (state, action) => {
 				state.authUser = action.payload;
 				state.isCheckingAuth = false;
-				state.isLoggedIn = !!action.payload;
+				state.isLoggedIn = false;
 			})
 			.addCase(checkAuth.rejected, (state) => {
 				state.authUser = null;
@@ -97,7 +109,17 @@ const authSlice = createSlice({
 			})
 			.addCase(login.rejected, (state) => {
 				state.isLoggedIn = false;
-			});
+			})
+			.addCase(updateProfile.pending, (state)=>{
+				state.isUpdatingProfile = true;
+			})
+			.addCase(updateProfile.fulfilled, (state, action)=>{
+				state.isUpdatingProfile = false;
+				state.authUser = action.payload;
+			})
+			.addCase(updateProfile.rejected, (state)=>{
+				state.isUpdatingProfile = false
+			})
 	},
 });
 

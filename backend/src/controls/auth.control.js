@@ -38,7 +38,7 @@ const logIn = async (req, res) => {
 
 	res.status(200).json({
 		message: "login sucessfully",
-		data: { id: user._id, fullName: user.fullName, profilePic: user.avatarUrl },
+		data: user,
 	});
 };
 
@@ -48,11 +48,11 @@ const logOut = (req, res) => {
 };
 
 const updateProfile = async (req, res) =>{
-	const {fullName} = req.body;
-	if(!req.file && !fullName) throw createError('new avatar or fullName must be provided!', 400);
+	const {fullName, profilePic} = req.body;
+	if (!profilePic && !fullName) throw createError("new avatar or fullName must be provided!", 400);
 	let updatedVal = {}
-	if(req.file){
-		const uploadRespons = await cloudinary.uploader.upload(req.file.path);
+	if (profilePic) {
+		const uploadRespons = await cloudinary.uploader.upload(profilePic);
 		updatedVal.avatarUrl = uploadRespons.secure_url;
 	}
 	if(fullName) updatedVal.fullName = fullName;
@@ -61,7 +61,7 @@ const updateProfile = async (req, res) =>{
  
 	res.status(200).json({
 		message: "Profile updated successfully",
-		data: { id: updatedUser._id, fullName: updatedUser.fullName, profilePic: updatedUser.avatarUrl },
+		data: updatedUser,
 	});
 }
 
