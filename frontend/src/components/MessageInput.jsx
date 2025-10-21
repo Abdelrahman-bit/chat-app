@@ -67,42 +67,50 @@ const MessageInput = () => {
 						<img
 							src={imagePreview}
 							alt='Preview'
-							className='w-20 h-20 object-cover rounded-lg border border-zinc-700'
+							className='w-24 h-24 object-cover rounded-xl border border-white/6 shadow-sm'
 						/>
 						<button
 							onClick={removeImage}
-							className='absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-base-300
-              flex items-center justify-center'
+							className='absolute -top-2 -right-2 w-6 h-6 rounded-full bg-white/6 text-white flex items-center justify-center'
 							type='button'
+							aria-label='Remove image'
 						>
-							<X className='size-3' />
+							<X className='w-3 h-3' />
 						</button>
 					</div>
 				</div>
 			)}
 
-			<form onSubmit={handleSendMessage} className='flex items-center gap-2'>
-				<div className='flex-1 flex gap-2'>
+			<form onSubmit={handleSendMessage} className='flex items-center gap-3'>
+				<div className='flex-1 flex items-center gap-2 bg-white/5 rounded-full px-3 py-2 card-surface'>
+					<button
+						type='button'
+						onClick={() => fileInputRef.current?.click()}
+						className='p-2 rounded-full hover:bg-white/6 transition'
+						aria-label='Attach image'
+					>
+						<Image className='w-4 h-4 text-zinc-300' />
+					</button>
+
+					<input type='file' accept='image/*' className='hidden' ref={fileInputRef} onChange={handleImageChange} />
+
 					<input
 						type='text'
-						className='w-full input input-bordered rounded-lg input-sm sm:input-md'
+						className='bg-transparent outline-none text-sm w-full text-zinc-100'
 						placeholder='Type a message...'
 						value={text}
 						onChange={(e) => setText(e.target.value)}
+						aria-label='Message input'
 					/>
-					<input type='file' accept='image/*' className='hidden' ref={fileInputRef} onChange={handleImageChange} />
-
-					<button
-						type='button'
-						className={`hidden sm:flex btn btn-circle
-                     ${imagePreview ? "text-emerald-500" : "text-zinc-400"}`}
-						onClick={() => fileInputRef.current?.click()}
-					>
-						<Image size={20} />
-					</button>
 				</div>
-				<button type='submit' className='btn btn-sm btn-circle' disabled={!text.trim() && !imagePreview}>
-					<Send size={22} />
+
+				<button
+					type='submit'
+					className='p-3 rounded-full bg-indigo-600 hover:bg-indigo-500 transition shadow-md'
+					disabled={!text.trim() && !imagePreview}
+					aria-label='Send'
+				>
+					<Send className='w-5 h-5 text-white' />
 				</button>
 			</form>
 		</div>

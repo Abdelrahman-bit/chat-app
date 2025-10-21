@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import ChatHeader from "./ChatHeader";
 import MessageInput from "./MessageInput";
-import MessageSkeleton from "./skeletons/MessageSkeleton";
+import MessageSkeleton from "./skeleton/MessageSkeleton";
 import { formatMessageTime } from "../lib/utils";
 import { useDispatch, useSelector } from "react-redux";
 import { getMessages } from "../store/slices/message";
@@ -76,31 +76,45 @@ const ChatContainer = () => {
 			<ChatHeader />
 
 			<div className='flex-1 overflow-y-auto p-4 space-y-4'>
-				{messages.map((message) => (
-					<div key={message._id} className={`chat ${message.senderId === authUser._id ? "chat-end" : "chat-start"}`}>
-						<div className=' chat-image avatar'>
-							<div className='size-10 rounded-full border'>
-								<img
-									src={
-										message.senderId === authUser._id
-											? authUser.avatarUrl || "/avatar.png"
-											: selectedUser?.avatarUrl || selectedUser?.profilePic || "/avatar.png"
-									}
-									alt='profile pic'
-								/>
-							</div>
-						</div>
-						<div className='chat-header mb-1'>
-							<time className='text-xs opacity-50 ml-1'>{formatMessageTime(message.createdAt)}</time>
-						</div>
-						<div className='chat-bubble flex flex-col'>
-							{message.image && (
-								<img src={message.image} alt='Attachment' className='sm:max-w-[200px] rounded-md mb-2' />
+				{messages.map((message) => {
+					const mine = message.senderId === authUser._id;
+					const avatarSrc = mine
+						? authUser.avatarUrl || "/avatar.png"
+						: selectedUser?.avatarUrl || selectedUser?.profilePic || "/avatar.png";
+					return (
+						<div key={message._id} className={`flex items-end gap-3 ${mine ? "justify-end" : "justify-start"}`}>
+							{!mine && (
+								<div className='w-10 h-10 rounded-full overflow-hidden border border-white/6'>
+									<img src={avatarSrc} alt='profile' className='w-full h-full object-cover' />
+								</div>
 							)}
-							{message.text && <p>{message.text}</p>}
+
+							<div className={`max-w-[70%] ${mine ? "text-right" : "text-left"}`}>
+								<div
+									className={`inline-block p-3 rounded-2xl shadow-sm ${
+										mine ? "bg-indigo-600 text-white" : "bg-white/6 text-zinc-100"
+									}`}
+								>
+									{message.image && (
+										<img
+											src={message.image}
+											alt='Attachment'
+											className='w-full sm:max-w-[300px] rounded-lg mb-2 object-cover'
+										/>
+									)}
+									{message.text && <p className='whitespace-pre-wrap'>{message.text}</p>}
+								</div>
+								<div className='text-[11px] text-zinc-400 mt-1'>{formatMessageTime(message.createdAt)}</div>
+							</div>
+
+							{mine && (
+								<div className='w-10 h-10 rounded-full overflow-hidden border border-white/6'>
+									<img src={avatarSrc} alt='profile' className='w-full h-full object-cover' />
+								</div>
+							)}
 						</div>
-					</div>
-				))}
+					);
+				})}
 
 				{/* scroll sentinel placed at the end so scrolling to it doesn't push the input */}
 				<div ref={messageEndRef} />

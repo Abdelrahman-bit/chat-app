@@ -25,6 +25,7 @@ export function SocketProvider({ children, url = "http://localhost:5000", auth }
 
 		// optional: listen for online users event
 		const onOnlineUsers = (users) => {
+			console.debug("SocketProvider received onlineUsers", users);
 			dispatch(onlineUsersUpdated(users));
 		};
 		socket.on("onlineUsers", onOnlineUsers);

@@ -7,10 +7,10 @@ const HomePage = () => {
 	const selectedUser = useSelector((state) => state.messages.selectedUser);
 
 	return (
-		<div className='min-h-screen bg-base-200 pt-16'>
+		<div className='min-h-screen pt-16'>
 			<div className='flex items-center justify-center px-4 py-6'>
-				<div className='bg-base-100 rounded-lg shadow-cl w-full max-w-6xl h-[calc(100vh-4rem)]'>
-					<div className='flex h-full rounded-lg overflow-hidden'>
+				<div className='w-full max-w-6xl h-[calc(100vh-5rem)] rounded-2xl overflow-hidden shadow-2xl card-surface'>
+					<div className='flex h-full'>
 						<Sidebar />
 
 						{!selectedUser ? <NoChatSelected /> : <ChatContainer />}

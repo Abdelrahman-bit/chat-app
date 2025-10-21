@@ -49,6 +49,7 @@ const messageSlice = createSlice({
 		messages: [],
 		users: [],
 		selectedUser: null,
+		searchQuery: "",
 		isUsersLoading: false,
 		isMessagesLoading: false,
 		isSendingMessage: false,
@@ -56,6 +57,9 @@ const messageSlice = createSlice({
 	reducers: {
 		setSelectedUser(state, action) {
 			state.selectedUser = action.payload;
+		},
+		setSearchQuery(state, action) {
+			state.searchQuery = action.payload;
 		},
 		optimisticMessageAdded(state, action) {
 			// action.payload should be the temp message object
@@ -121,5 +125,5 @@ const messageSlice = createSlice({
 	},
 });
 
-export const { setSelectedUser, optimisticMessageAdded, messageReceived } = messageSlice.actions;
+export const { setSelectedUser, setSearchQuery, optimisticMessageAdded, messageReceived } = messageSlice.actions;
 export default messageSlice.reducer;
