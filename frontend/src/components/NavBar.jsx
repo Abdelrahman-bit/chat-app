@@ -28,18 +28,20 @@ const NavBar = () => {
 						</Link>
 					</div>
 
-					<div className='flex-1 hidden md:flex items-center justify-center'>
-						<div className='w-2/3 flex items-center gap-2 bg-white/6 rounded-lg py-2 px-3 card-surface'>
-							<Search className='w-4 h-4 text-zinc-300' />
-							<input
-								aria-label='Search'
-								placeholder='Search people'
-								value={search}
-								onChange={(e) => handleSearchChange(e.target.value)}
-								className='bg-transparent outline-none text-sm w-full text-zinc-200'
-							/>
+					{authUser && (
+						<div className='flex-1 hidden md:flex items-center justify-center'>
+							<div className='w-2/3 flex items-center gap-2 bg-white/6 rounded-lg py-2 px-3 card-surface'>
+								<Search className='w-4 h-4 text-zinc-300' />
+								<input
+									aria-label='Search'
+									placeholder='Search people'
+									value={search}
+									onChange={(e) => handleSearchChange(e.target.value)}
+									className='bg-transparent outline-none text-sm w-full text-zinc-200'
+								/>
+							</div>
 						</div>
-					</div>
+					)}
 
 					<div className='ml-auto flex items-center gap-3'>
 						<Link to={"/settings"} className='p-2 rounded-md hover:bg-white/4 transition'>
