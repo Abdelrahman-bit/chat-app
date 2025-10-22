@@ -2,7 +2,10 @@ import { io } from "socket.io-client";
 
 let socket = null;
 
-const defaultSocketUrl = import.meta.env.VITE_SOCKET_URL || "http://localhost:5000";
+const defaultSocketUrl =
+	import.meta.env.MODE === "production"
+		? import.meta.env.VITE_SOCKET_URL || window.location.origin // ✅ works when backend serves frontend
+		: "http://localhost:5000";
 
 export function connectSocketClient(url = defaultSocketUrl, opts = {}) {
 	// If there's an existing socket but the caller provided auth/options,
@@ -18,7 +21,10 @@ export function connectSocketClient(url = defaultSocketUrl, opts = {}) {
 		socket = null;
 	}
 
-	socket = io(url, opts);
+	socket = io(url, {
+		withCredentials: true, // ✅ important if you use cookies/sessions
+		...opts,
+	});
 	return socket;
 }
 
