@@ -24,7 +24,7 @@ const NavBar = () => {
 							<div className='w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center shadow-lg'>
 								<MessageSquare className='w-5 h-5 text-white' />
 							</div>
-							<h1 className='text-lg font-semibold tracking-wide hidden sm:block'>Chatty</h1>
+							<h1 className='text-lg font-semibold tracking-wide hidden sm:block'>NextChat</h1>
 						</Link>
 					</div>
 
