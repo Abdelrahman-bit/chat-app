@@ -25,10 +25,7 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(cookieParser());
 app.use(
 	cors({
-		origin:
-			process.env.NODE_ENV === "production"
-				? process.env.FRONTEND_URL || "https://chat-app-production-095c.up.railway.app"
-				: "http://localhost:5173",
+		origin: "https://chat-app-production-095c.up.railway.app",
 		credentials: true,
 	})
 );
