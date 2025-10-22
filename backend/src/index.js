@@ -43,7 +43,6 @@ if (process.env.NODE_ENV === "production") {
 	app.use(express.static(path.join(__dirname, "../frontend/dist")));
 	const indexPath = path.join(__dirname, "../frontend/dist/index.html");
 	console.log("Serving index.html from:", indexPath);
-	console.log("Exists?", fs.existsSync(indexPath));
 
 	// Catch-all route for SPA - serves index.html for non-API routes
 	// This replaces the problematic app.get("/(.*)", ...)
