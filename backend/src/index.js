@@ -40,8 +40,8 @@ app.use("/api/message", asyncHandler(protectedRoute), messageRouter);
 // Production: Serve frontend static files
 if (process.env.NODE_ENV === "production") {
 	// Serve static files from frontend build
-	app.use(express.static(path.join(__dirname, "../frontend/dist")));
-	const indexPath = path.join(__dirname, "../frontend/dist/index.html");
+	app.use(express.static(path.join(__dirname, "../../frontend/dist")));
+	const indexPath = path.join(__dirname, "../../frontend/dist/index.html");
 	console.log("Serving index.html from:", indexPath);
 
 	// Catch-all route for SPA - serves index.html for non-API routes
@@ -49,7 +49,7 @@ if (process.env.NODE_ENV === "production") {
 	app.use((req, res, next) => {
 		// Only serve index.html for non-API routes
 		if (!req.path.startsWith("/api")) {
-			res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
+			res.sendFile(path.join(__dirname, "../../frontend/dist/index.html"));
 		} else {
 			next();
 		}
