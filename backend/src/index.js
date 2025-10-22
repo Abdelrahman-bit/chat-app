@@ -9,11 +9,15 @@ import { connectDB } from "./utils/db.js";
 import asyncHandler from "./utils/catchAsync.js";
 import { protectedRoute } from "./middleware/authHandler.js";
 import { app, server } from "./utils/soket.js";
-import path from "path"
+import path from "path";
+import { fileURLToPath } from "url";
+
+// ES module fix for __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 env.config();
 const port = process.env.PORT || 5000;
-const __dirname = path.resolve();
 
 // Increase payload size limits to allow large base64 image uploads from the frontend
 app.use(express.json({ limit: "50mb" }));
@@ -21,24 +25,41 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(cookieParser());
 app.use(
 	cors({
-		origin: "http://localhost:5173",
+		origin:
+			process.env.NODE_ENV === "production"
+				? process.env.FRONTEND_URL || "https://your-app.up.railway.app"
+				: "http://localhost:5173",
 		credentials: true,
 	})
 );
 
+// API Routes
 app.use("/api/auth", authRouter);
 app.use("/api/message", asyncHandler(protectedRoute), messageRouter);
 
+// Production: Serve frontend static files
 if (process.env.NODE_ENV === "production") {
+	// Serve static files from frontend build
 	app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
-	app.get("/(.*)", (req, res) => {
-		res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+	// Catch-all route for SPA - serves index.html for non-API routes
+	// This replaces the problematic app.get("/(.*)", ...)
+	app.use((req, res, next) => {
+		// Only serve index.html for non-API routes
+		if (!req.path.startsWith("/api")) {
+			res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
+		} else {
+			next();
+		}
 	});
 }
 
+// Error handler - must be last
 app.use(errorHandler);
+
+// Start server
 server.listen(port, () => {
 	console.log(`Server is running on port ${port}`);
+	console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
 	connectDB();
 });
