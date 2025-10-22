@@ -2,11 +2,7 @@ import { io } from "socket.io-client";
 
 let socket = null;
 
-const socketBaseUrl = import.meta.env.VITE_SOCKET_URL
-	? import.meta.env.VITE_SOCKET_URL
-	: import.meta.env.MODE === "development"
-	? "http://localhost:5000"
-	: window.location.origin;
+const socketBaseUrl = import.meta.env.VITE_SOCKET_URL || "http://localhost:5000";
 
 export function connectSocketClient(url = socketBaseUrl, opts = {}) {
 	if (socket) {
@@ -21,7 +17,27 @@ export function connectSocketClient(url = socketBaseUrl, opts = {}) {
 
 	socket = io(url, {
 		withCredentials: true,
+		transports: ["websocket", "polling"], // Try websocket first
 		...opts,
+	});
+
+	// Debug logging
+	socket.on("connect", () => {
+		console.log("Socket connected:", socket.id);
+		console.log("Connected to:", url);
+	});
+
+	socket.on("connect_error", (error) => {
+		console.error("Socket connection error:", error.message);
+		console.log("Attempted URL:", url);
+	});
+
+	socket.on("disconnect", (reason) => {
+		console.log("Socket disconnected:", reason);
+	});
+
+	socket.on("onlineUsers", (users) => {
+		console.log("Online users updated:", users);
 	});
 
 	return socket;

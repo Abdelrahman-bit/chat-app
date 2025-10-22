@@ -8,9 +8,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
 	cors: {
 		origin:
-			process.env.NODE_ENV === "production"
-				? process.env.FRONTEND_URL || "https://chat-app-production-095c.up.railway.app"
-				: "http://localhost:5173",
+			process.env.NODE_ENV === "production"? "https://chat-app-production-095c.up.railway.app" : "http://localhost:5173",
 		credentials: true,
 	},
 });
