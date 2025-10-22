@@ -2,7 +2,9 @@ import { io } from "socket.io-client";
 
 let socket = null;
 
-export function connectSocketClient(url = "http://localhost:5000", opts = {}) {
+const defaultSocketUrl = import.meta.env.VITE_SOCKET_URL || "http://localhost:5000";
+
+export function connectSocketClient(url = defaultSocketUrl, opts = {}) {
 	// If there's an existing socket but the caller provided auth/options,
 	// we should recreate the socket so the handshake uses the new auth info.
 	if (socket) {
