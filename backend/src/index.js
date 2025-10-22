@@ -41,8 +41,9 @@ app.use("/api/message", asyncHandler(protectedRoute), messageRouter);
 if (process.env.NODE_ENV === "production") {
 	// Serve static files from frontend build
 	app.use(express.static(path.join(__dirname, "../frontend/dist")));
-	console.log("Serving index.html from:", __dirname);
-	console.log("Exists?", fs.existsSync(__dirname));
+	const indexPath = path.join(__dirname, "../frontend/dist/index.html");
+	console.log("Serving index.html from:", indexPath);
+	console.log("Exists?", fs.existsSync(indexPath));
 
 	// Catch-all route for SPA - serves index.html for non-API routes
 	// This replaces the problematic app.get("/(.*)", ...)
