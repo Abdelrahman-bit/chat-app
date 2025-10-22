@@ -38,7 +38,15 @@ if (process.env.NODE_ENV === "production") {
 }
 
 app.use(errorHandler);
-server.listen(port, () => {
-	console.log(`Server is running on port ${port}`);
-	connectDB();
-});
+
+if (process.env.VERCEL === undefined) {
+  server.listen(port, () => {
+    console.log(`Server running locally on port ${port}`);
+    connectDB();
+  });
+} else {
+  connectDB();
+}
+
+// 🟢 Export app for Vercel
+export default app;
