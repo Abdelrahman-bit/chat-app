@@ -92,11 +92,11 @@ Author
 Abdelrahman Mohamed Abdelhamed
 📧 abdelrahman.mohamed4030@gmail.com
 
-🔗 LinkedIn
+🔗 <a src="https://www.linkedin.com/in/abdelrahman-mohamed-soliman/"> LinkedIn </a>
 
-🌐 Portfolio
+🌐 <a src="https://abdelrahman-portfolio-3d.netlify.app/"> Portfolio </a>
 
-##🤝 Contributing
+## 🤝 Contributing
 
 Pull requests are welcome!
 If you find a bug 🐛 or want to suggest a feature 💡, open an issue or create a PR.
@@ -111,7 +111,7 @@ This project includes:
 
 0 regrets 
 
-##License
+## License
 
 This project is licensed under the MIT License — feel free to use and modify.
 
