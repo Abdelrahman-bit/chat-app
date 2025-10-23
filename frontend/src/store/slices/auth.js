@@ -99,7 +99,7 @@ const authSlice = createSlice({
 			.addCase(signUp.fulfilled, (state, action) => {
 				// On successful signup the API may return the created user or a token; adjust as needed
 				state.authUser = action.payload;
-				state.isSignUp = true;
+				state.isSignUp = false;
 				state.isLoggedIn = !!action.payload;
 			})
 			.addCase(signUp.rejected, (state) => {
