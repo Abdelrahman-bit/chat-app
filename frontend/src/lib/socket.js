@@ -6,10 +6,10 @@ const socketBaseUrl =
 	import.meta.env.VITE_SOCKET_URL ||
 	(import.meta.env.MODE === "development" ? "http://localhost:5000" : "https://chat-app-production-095c.up.railway.app");
 
-// debugging
-console.log("VITE_SOCKET_URL:", import.meta.env.VITE_SOCKET_URL);
-console.log("Mode:", import.meta.env.MODE);
-console.log(socketBaseUrl);
+	// debugging
+	console.log("VITE_SOCKET_URL:", import.meta.env.VITE_SOCKET_URL);
+	console.log("Mode:", import.meta.env.MODE);
+	console.log(socketBaseUrl)
 export function connectSocketClient(url = socketBaseUrl, opts = {}) {
 	if (socket) {
 		if (!opts || !opts.auth) return socket;
@@ -21,17 +21,11 @@ export function connectSocketClient(url = socketBaseUrl, opts = {}) {
 		socket = null;
 	}
 
-	// Ensure it always uses wss:// in production
-	const finalUrl = import.meta.env.MODE === "production" ? url.replace(/^http/, "https") : url;
-
-	socket = io(finalUrl, {
+	socket = io(url, {
 		withCredentials: true,
-		transports: ["websocket", "polling"],
-		secure: true, // force secure WebSocket in production
+		transports: ["websocket", "polling"], // Try websocket first
 		...opts,
-	});	
-	console.log("Connecting to socket at:", finalUrl);
-
+	});
 
 	// Debug logging
 	socket.on("connect", () => {
