@@ -5,7 +5,7 @@ import { onlineUsersUpdated } from "../store/slices/auth";
 
 const SocketContext = createContext(null);
 
-export function SocketProvider({ children, url = "http://localhost:5000", auth }) {
+export function SocketProvider({ children, url = "https://chat-app-production-095c.up.railway.app", auth }) {
 	const [connected, setConnected] = useState(false);
 	const socketRef = useRef(null);
 	const dispatch = useDispatch();
