@@ -19,7 +19,7 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-		console.log("auth:", auth);
+		// console.log("auth:", auth);
 		dispatch(checkAuth());
 		// run once on mount
   }, [dispatch]);

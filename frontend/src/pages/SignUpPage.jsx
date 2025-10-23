@@ -1,40 +1,41 @@
-import { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { signUp } from '../store/slices/auth';
-import { Eye, EyeOff, Loader2, Lock, Mail, MessageSquare, User } from 'lucide-react';
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { signUp } from "../store/slices/auth";
+import { Eye, EyeOff, Loader2, Lock, Mail, MessageSquare, User } from "lucide-react";
 import { Link } from "react-router-dom";
-import AuthImagePattern from '../components/AuthImagePattern';
-import toast from 'react-hot-toast';
-
+import AuthImagePattern from "../components/AuthImagePattern";
+import toast from "react-hot-toast";
 
 const SignUpPage = () => {
-  const dispatch = useDispatch()
-  const [showPassword, setShowPassword] = useState(false)
-  const [formData, setFormData] = useState({
-    fullName: '', 
-    email: '',
-    password: ''
-  })
-  const isSignUp = useSelector((state) => state.userAuth.isSignUp);
-
-  const validateForm = ()=>{
-     if (!formData.fullName.trim()) return toast.error("Full name is required");
+	const auth = useSelector((state) => state.userAuth.authUser);
+	const dispatch = useDispatch();
+	const [showPassword, setShowPassword] = useState(false);
+	const [formData, setFormData] = useState({
+		fullName: "",
+		email: "",
+		password: "",
+	});
+	const isSignUp = useSelector((state) => state.userAuth.isSignUp);
+	
+	const validateForm = () => {
+		if (!formData.fullName.trim()) return toast.error("Full name is required");
 		if (!formData.email.trim()) return toast.error("Email is required");
 		if (!/\S+@\S+\.\S+/.test(formData.email)) return toast.error("Invalid email format");
 		if (!formData.password) return toast.error("Password is required");
 		if (formData.password.length < 6) return toast.error("Password must be at least 6 characters");
 
 		return true;
-  }
+	};
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+	const handleSubmit = (e) => {
+		e.preventDefault();
 
-    const success = validateForm();
+		const success = validateForm();
 
-    if (success === true) dispatch(signUp(formData));
-  }
-  return (
+		if (success === true) dispatch(signUp(formData));
+	};
+	console.log(auth);
+	return (
 		<div className='min-h-screen grid lg:grid-cols-2'>
 			{/* left side */}
 			<div className='flex flex-col justify-center items-center p-6 sm:p-12'>
@@ -149,7 +150,7 @@ const SignUpPage = () => {
 				subtitle='Connect with friends, share moments, and stay in touch with your loved ones.'
 			/>
 		</div>
-  );
-}
+	);
+};
 
-export default SignUpPage
+export default SignUpPage;
