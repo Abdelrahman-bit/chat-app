@@ -26,7 +26,7 @@ export function SocketProvider({ children, url = backendUrl, auth }) {
 
 		// optional: listen for online users event
 		const onOnlineUsers = (users) => {
-			console.debug("SocketProvider received onlineUsers", users);
+			// console.debug("SocketProvider received onlineUsers", users);
 			dispatch(onlineUsersUpdated(users));
 		};
 		socket.on("onlineUsers", onOnlineUsers);
