@@ -19,7 +19,6 @@ export function connectSocketClient(auth) {
 		withCredentials: true,
 		transports: ["websocket", "polling"],
 		secure: import.meta.env.MODE === "production",
-		auth, // { userId }
 	});
 
 	socket.on("connect", () => {
