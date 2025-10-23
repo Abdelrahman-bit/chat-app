@@ -37,7 +37,7 @@ function App() {
 			<NavBar />
 			<Routes>
 				<Route path='/' element={auth ? <HomePage /> : <Navigate to='/login' />} />
-				<Route path='/signup' element={auth ? <SignUpPage /> : <Navigate to='/login' />} />
+				<Route path='/signup' element={<SignUpPage />} />
 				<Route path='/login' element={!auth ? <LoginPage /> : <Navigate to={"/"} />} />
 				<Route path='/settings' element={<SettingsPage />} />
 				<Route path='/profile' element={auth ? <ProfilePage /> : <Navigate to='/login' />} />

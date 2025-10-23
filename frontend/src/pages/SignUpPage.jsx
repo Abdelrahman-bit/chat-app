@@ -7,7 +7,6 @@ import AuthImagePattern from "../components/AuthImagePattern";
 import toast from "react-hot-toast";
 
 const SignUpPage = () => {
-	const auth = useSelector((state) => state.userAuth.authUser);
 	const dispatch = useDispatch();
 	const [showPassword, setShowPassword] = useState(false);
 	const [formData, setFormData] = useState({
@@ -34,7 +33,6 @@ const SignUpPage = () => {
 
 		if (success === true) dispatch(signUp(formData));
 	};
-	console.log(auth);
 	return (
 		<div className='min-h-screen grid lg:grid-cols-2'>
 			{/* left side */}
