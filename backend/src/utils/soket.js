@@ -8,61 +8,41 @@ const server = http.createServer(app);
 const io = new Server(server, {
 	cors: {
 		origin:
-			process.env.NODE_ENV === "production" ? "https://chat-app-production-095c.up.railway.app" : "http://localhost:5173",
+			process.env.NODE_ENV === "production"
+				? process.env.FRONTEND_URL || "https://chat-app-production-095c.up.railway.app"
+				: "http://localhost:5173",
 		methods: ["GET", "POST"],
 		credentials: true,
 	},
 });
 
-// Track connected sockets per userId so we can compute which userIds are online
-const userSocketCount = new Map(); // userId -> number of sockets
+// Track connected sockets per user
+const userSocketCount = new Map();
 
 function emitOnlineUsers() {
 	const onlineUsers = Array.from(userSocketCount.keys());
-	try {
-		io.emit("onlineUsers", onlineUsers);
-		console.log("Emitted onlineUsers:", onlineUsers);
-	} catch (e) {
-		console.error("Failed to emit onlineUsers", e);
-	}
+	io.emit("onlineUsers", onlineUsers);
 }
 
 io.on("connection", (socket) => {
-	console.log("A user connected", socket.id);
+	console.log("✅ User connected:", socket.id);
 
-	// If client passed auth with userId, join a room with that userId so we can target emits
-	try {
-		const userId = socket.handshake?.auth?.userId;
-		if (userId) {
-			socket.join(userId);
-			console.log(`Socket ${socket.id} joined room ${userId}`);
-
-			// increment socket count for this user
-			const prev = userSocketCount.get(userId) || 0;
-			userSocketCount.set(userId, prev + 1);
-			// broadcast updated list
-			emitOnlineUsers();
-		}
-	} catch (e) {
-		console.error("Error during socket connection auth handling", e);
+	const userId = socket.handshake?.auth?.userId;
+	if (userId) {
+		socket.join(userId);
+		userSocketCount.set(userId, (userSocketCount.get(userId) || 0) + 1);
+		emitOnlineUsers();
 	}
 
 	socket.on("disconnect", () => {
-		console.log("A user disconnected", socket.id);
-		try {
-			const userId = socket.handshake?.auth?.userId;
-			if (userId) {
-				const prev = userSocketCount.get(userId) || 0;
-				if (prev <= 1) {
-					userSocketCount.delete(userId);
-				} else {
-					userSocketCount.set(userId, prev - 1);
-				}
-				emitOnlineUsers();
-			}
-		} catch (e) {
-			console.error("Error during socket disconnect handling", e);
+		const userId = socket.handshake?.auth?.userId;
+		if (userId) {
+			const prev = userSocketCount.get(userId) || 0;
+			if (prev <= 1) userSocketCount.delete(userId);
+			else userSocketCount.set(userId, prev - 1);
+			emitOnlineUsers();
 		}
+		console.log("❌ User disconnected:", socket.id);
 	});
 });
 

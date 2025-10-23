@@ -2,54 +2,40 @@ import { io } from "socket.io-client";
 
 let socket = null;
 
+// ✅ Automatically uses the correct URL for production or dev
 const socketBaseUrl =
-	import.meta.env.VITE_SOCKET_URL ||
-	(import.meta.env.MODE === "development" ? "http://localhost:5000" : "https://chat-app-production-095c.up.railway.app");
+	import.meta.env.MODE === "production" ? "https://chat-app-production-095c.up.railway.app" : "http://localhost:5000";
 
-// debugging
-console.log("VITE_SOCKET_URL:", import.meta.env.VITE_SOCKET_URL);
-console.log("Mode:", import.meta.env.MODE);
-console.log(socketBaseUrl);
-export function connectSocketClient(url = socketBaseUrl, opts = {}) {
+console.log("🌍 Mode:", import.meta.env.MODE);
+console.log("🔗 Socket URL:", socketBaseUrl);
+
+export function connectSocketClient(auth) {
 	if (socket) {
-		if (!opts || !opts.auth) return socket;
-		try {
-			socket.disconnect();
-		} catch {
-			// ignore
-		}
+		socket.disconnect();
 		socket = null;
 	}
 
-	// Ensure it always uses wss:// in production
-	const finalUrl = import.meta.env.MODE === "production" ? url.replace(/^http/, "https") : url;
-
-	socket = io(finalUrl, {
+	socket = io(socketBaseUrl, {
 		withCredentials: true,
 		transports: ["websocket", "polling"],
-		secure: true, // force secure WebSocket in production
-		...opts,
-	});	
-	console.log("Connecting to socket at:", finalUrl);
-
-
-	// Debug logging
-	socket.on("connect", () => {
-		console.log("Socket connected:", socket.id);
-		console.log("Connected to:", url);
+		secure: import.meta.env.MODE === "production",
+		auth, // { userId }
 	});
 
-	socket.on("connect_error", (error) => {
-		console.error("Socket connection error:", error.message);
-		console.log("Attempted URL:", url);
+	socket.on("connect", () => {
+		console.log("✅ Socket connected:", socket.id);
+	});
+
+	socket.on("connect_error", (err) => {
+		console.error("❌ Socket connection error:", err.message);
 	});
 
 	socket.on("disconnect", (reason) => {
-		console.log("Socket disconnected:", reason);
+		console.log("⚠️ Socket disconnected:", reason);
 	});
 
 	socket.on("onlineUsers", (users) => {
-		console.log("Online users updated:", users);
+		console.log("👥 Online users:", users);
 	});
 
 	return socket;
@@ -60,11 +46,6 @@ export function getSocket() {
 }
 
 export function disconnectSocket() {
-	if (!socket) return;
-	try {
-		socket.disconnect();
-	} catch {
-		// ignore
-	}
+	if (socket) socket.disconnect();
 	socket = null;
 }
