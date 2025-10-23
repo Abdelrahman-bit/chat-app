@@ -2,7 +2,8 @@ import { io } from "socket.io-client";
 
 let socket = null;
 
-const socketBaseUrl = "https://chat-app-production-095c.up.railway.app" 
+const socketBaseUrl = import.meta.env.VITE_SOCKET_URL || "http://localhost:5000";
+
 
 export function connectSocketClient(url = socketBaseUrl, opts = {}) {
 	if (socket) {
