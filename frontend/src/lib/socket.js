@@ -2,7 +2,8 @@ import { io } from "socket.io-client";
 
 let socket = null;
 
-const socketBaseUrl = "https://chat-app-production-095c.up.railway.app/api" || "http://localhost:5000";
+const socketBaseUrl =
+	import.meta.env.MODE === "production" ? "https://chat-app-production-095c.up.railway.app" : "http://localhost:5000";
 
 console.log(socketBaseUrl)
 export function connectSocketClient(url = socketBaseUrl, opts = {}) {
