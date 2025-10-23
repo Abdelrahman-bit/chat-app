@@ -4,8 +4,9 @@ import { connectSocketClient, disconnectSocket, getSocket } from "../lib/socket"
 import { onlineUsersUpdated } from "../store/slices/auth";
 
 const SocketContext = createContext(null);
+const backendUrl = process.env.NODE_ENV === "production" ? "https://chat-app-production-095c.up.railway.app" : "http://localhost:5000"
 
-export function SocketProvider({ children, url = "https://chat-app-production-095c.up.railway.app", auth }) {
+export function SocketProvider({ children, url = backendUrl, auth }) {
 	const [connected, setConnected] = useState(false);
 	const socketRef = useRef(null);
 	const dispatch = useDispatch();
