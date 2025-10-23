@@ -115,4 +115,4 @@ This project includes:
 
 This project is licensed under the MIT License — feel free to use and modify.
 
-##⭐ If you like this project, give it a star on GitHub — it keeps me motivated!
+## ⭐ If you like this project, give it a star on GitHub — it keeps me motivated!
