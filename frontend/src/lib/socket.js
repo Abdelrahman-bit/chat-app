@@ -6,7 +6,10 @@ const socketBaseUrl =
 	import.meta.env.VITE_SOCKET_URL ||
 	(import.meta.env.MODE === "development" ? "http://localhost:5000" : "https://chat-app-production-095c.up.railway.app");
 
-console.log(socketBaseUrl)
+	// debugging
+	console.log("VITE_SOCKET_URL:", import.meta.env.VITE_SOCKET_URL);
+	console.log("Mode:", import.meta.env.MODE);
+	console.log(socketBaseUrl)
 export function connectSocketClient(url = socketBaseUrl, opts = {}) {
 	if (socket) {
 		if (!opts || !opts.auth) return socket;
